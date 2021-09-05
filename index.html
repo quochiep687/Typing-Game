@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing-Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 600px;
+            background-color: rgb(49, 46, 46);
+        }
+        
+        .heading {
+            color: rgb(17, 213, 219);
+            font-size: 40px;
+            padding-bottom: 30px;
+            text-align: center;
+        }
+        
+        .description {
+            display: block;
+            color: rgb(204, 187, 30);
+            padding-bottom: 30px;
+            text-align: center;
+        }
+        
+        .quote {
+            font-size: 25px;
+            color: white;
+            padding-bottom: 20px;
+            text-align: center;
+        }
+        
+        .message {
+            font-size: 24px;
+            color: tomato;
+            padding-bottom: 20px;
+            text-align: center;
+        }
+        
+        #input {
+            display: flex;
+            width: 200px;
+            margin-bottom: 20px;
+            padding: 4px;
+            border: solid 1px #ccc;
+            border-radius: 2px;
+            outline: none;
+            font-size: 20px;
+            justify-content: space-around;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .btn {
+            margin: auto;
+            display: block;
+            border: 1px solid rgb(189, 139, 139);
+            border-radius: 4px;
+            width: 70px;
+            height: 36px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .highlight {
+            background-color: rgb(124, 77, 24);
+        }
+        
+        .error {
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <h1 class="heading">Typing Game</h1>
+        <span class="description">Click "Start" to begin!</span>
+        <p class="quote"></p>
+        <p class="message"></p>
+        <input id="input" type="text" name="" id="">
+        <button class="btn">Start</button>
+    </div>
+    <script>
+        const quotes = [
+            'When you have eliminated the impossible, whatever remains, however improbable, must be the truth.',
+            'There is nothing more deceptive than an obvious fact.',
+            'I ought to know by this time that when a fact appears to be opposed to a long train of deductions it invariably proves to be capable of bearing some other interpretation.',
+            'I never make exceptions. An exception disproves the rule.',
+            'What one man can invent another can discover.',
+            'Nothing clears up a case so much as stating it to another person.',
+            'Education never ends, Watson. It is a series of lessons, with the greatest for the last.',
+        ];
+        let words = [];
+        let wordIndex = 0;
+        let startTime = Date.now();
+        const $ = document.querySelector.bind(document);
+        const quoteElement = $('.quote');
+        const messElement = $('.message');
+        const inputElement = $('#input');
+        document.querySelector('.btn').addEventListener('click', function() {
+            const quoteIndex = Math.floor(Math.random() * quotes.length);
+            const quote = quotes[quoteIndex];
+            words = quote.split(' ');
+            wordIndex = 0;
+            const spanwords = words.map(function(span) {
+                return `<span>${span} </span>`
+            });
+            quoteElement.innerHTML = spanwords.join('');
+            quoteElement.childNodes[0].className = 'highlight';
+            messElement.innerText = '';
+            inputElement.value = '';
+            inputElement.focus();
+            startTime = new Date().getTime();
+
+        });
+        inputElement.addEventListener('input', function() {
+            const currentWord = words[wordIndex];
+            const inputValue = inputElement.value;
+            if (inputValue === currentWord && wordIndex === (words.length - 1)) {
+                const elapsedTime = new Date().getTime() - startTime;
+                const mess = `CONGRATULATIONS! You finished in ${elapsedTime/1000} seconds.`
+                messElement.innerText = mess;
+            } else if (inputValue.endsWith(' ') && inputValue.trim() === currentWord) {
+                inputElement.value = '';
+                wordIndex++;
+                for (const wordElement of quoteElement.childNodes) {
+                    wordElement.className = '';
+                }
+                quoteElement.childNodes[wordIndex].className = 'highlight';
+            } else if (currentWord.startsWith(inputValue)) {
+                inputElement.className = '';
+            } else {
+                inputElement.className = 'error';
+            }
+        });
+    </script>
+</body>
+
+</html>
