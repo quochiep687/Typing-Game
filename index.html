@@ -23,7 +23,7 @@
         
         .heading {
             color: rgb(17, 213, 219);
-            font-size: 40px;
+            font-size: 60px;
             padding-bottom: 30px;
             text-align: center;
         }
@@ -33,19 +33,21 @@
             color: rgb(204, 187, 30);
             padding-bottom: 30px;
             text-align: center;
+            font-size: 24px;
+            animation: bounce-5 ease alternate 2s infinite;
         }
         
         .quote {
             font-size: 25px;
             color: white;
-            padding-bottom: 20px;
+            padding-bottom: 25px;
             text-align: center;
         }
         
         .message {
             font-size: 24px;
             color: tomato;
-            padding-bottom: 20px;
+            padding-bottom: 25px;
             text-align: center;
         }
         
@@ -85,6 +87,69 @@
         .error {
             background-color: red;
         }
+        
+        .restart {
+            font-size: 20px;
+            width: 240px;
+            color: rgb(204, 187, 30);
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            position: relative;
+            margin-left: auto;
+            margin-right: auto;
+            animation: jump ease-in-out alternate 0.8s 0.5s infinite;
+        }
+        
+        @keyframes bounce-5 {
+            0% {
+                transform: scale(1, 1) translateY(0);
+            }
+            5% {
+                transform: scale(1.1, .9) translateY(0);
+            }
+            30% {
+                transform: scale(.9, 1.1) translateY(-15px);
+            }
+            50% {
+                transform: scale(1, 1) translateY(0);
+            }
+            57% {
+                transform: scale(1, 1) translateY(-3px);
+            }
+            64% {
+                transform: scale(1, 1) translateY(0);
+            }
+            100% {
+                transform: scale(1, 1) translateY(0);
+            }
+        }
+        
+        @keyframes jump {
+            from {
+                transform: translateY(10px);
+                opacity: 0.3;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .restart::after {
+            display: block;
+            content: "";
+            border-color: transparent transparent rgb(204, 187, 30) transparent;
+            position: absolute;
+            top: -110%;
+            right: 42%;
+            border-width: 10px 15px;
+            border-style: solid;
+        }
+        
+        .show {
+            display: block;
+        }
     </style>
 </head>
 
@@ -96,6 +161,7 @@
         <p class="message"></p>
         <input id="input" type="text" name="" id="">
         <button class="btn">Start</button>
+        <p class="restart">Click "Start" to play again!</p>
     </div>
     <script>
         const quotes = [
@@ -114,9 +180,13 @@
         const quoteElement = $('.quote');
         const messElement = $('.message');
         const inputElement = $('#input');
+        const descriptionElement = $('.description');
+        const restartElement = $('.restart');
         document.querySelector('.btn').addEventListener('click', function() {
             const quoteIndex = Math.floor(Math.random() * quotes.length);
             const quote = quotes[quoteIndex];
+            descriptionElement.innerText = '';
+            restartElement.classList.remove('show');
             words = quote.split(' ');
             wordIndex = 0;
             const spanwords = words.map(function(span) {
@@ -135,8 +205,9 @@
             const inputValue = inputElement.value;
             if (inputValue === currentWord && wordIndex === (words.length - 1)) {
                 const elapsedTime = new Date().getTime() - startTime;
-                const mess = `CONGRATULATIONS! You finished in ${elapsedTime/1000} seconds.`
+                const mess = `You finished in ${elapsedTime/1000} seconds.`
                 messElement.innerText = mess;
+                restartElement.classList.add('show');
             } else if (inputValue.endsWith(' ') && inputValue.trim() === currentWord) {
                 inputElement.value = '';
                 wordIndex++;
